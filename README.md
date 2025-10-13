@@ -8,7 +8,7 @@ Model Context Protocol (MCP) server for AgentKit Platform Runtime API, built wit
 
 ```bash
 # Run directly from GitHub (no local installation needed)
-uvx --from git+https://github.com/your-org/agentkit-platform-mcp-server ap-mcp-server
+uvx --from git+https://github.com/CJ-HHH/agentkit-platform-mcp-server ap-mcp-server
 ```
 
 Environment variables can be set via IDE configuration or system env.
@@ -23,11 +23,32 @@ uv sync
 cp .env.example .env
 # Edit .env file with your credentials
 
-# 3. Run the server
+# 3. Run the server (stdio mode, for IDE integration)
 uv run ap-mcp-server
+
+# Or run with HTTP server
+uv run ap-mcp-server -t streamable-http
 ```
 
-Server URL: `http://127.0.0.1:8000/mcp`
+## Transport Modes
+
+### stdio (Default)
+- **Best for:** IDE integration (Windsurf, Claude Desktop, Cursor)
+- **Communication:** Through stdin/stdout
+- **Usage:** `ap-mcp-server` or `ap-mcp-server -t stdio`
+
+### streamable-http
+- **Best for:** Direct HTTP testing, web integrations
+- **Server URL:** `http://127.0.0.1:8000/mcp`
+- **Usage:** `ap-mcp-server -t streamable-http`
+
+**Command Options:**
+```bash
+ap-mcp-server -h              # Show help
+ap-mcp-server                 # Run with stdio (default)
+ap-mcp-server -t stdio        # Explicitly set stdio mode
+ap-mcp-server -t streamable-http  # Run HTTP server
+```
 
 ## Features
 
@@ -88,7 +109,7 @@ Edit config file: `~/Library/Application Support/Claude/claude_desktop_config.js
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/your-org/agentkit-platform-mcp-server",
+        "git+https://github.com/CJ-HHH/agentkit-platform-mcp-server",
         "ap-mcp-server"
       ],
       "env": {
@@ -116,7 +137,7 @@ Add to IDE MCP configuration:
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/your-org/agentkit-platform-mcp-server",
+        "git+https://github.com/CJ-HHH/agentkit-platform-mcp-server",
         "ap-mcp-server"
       ],
       "env": {
@@ -136,6 +157,7 @@ Add to IDE MCP configuration:
 - `AGENTKIT_BASE_URL` should be hostname only, **do not** include `https://` prefix
 - IDE JSON config env variables have highest priority (override `.env` file)
 - **No local installation needed** - `uvx` downloads and runs the package automatically
+- **Transport mode:** stdio is default, no need to specify `-t stdio` in args (IDEs use stdio automatically)
 
 ## Tool Parameters
 
