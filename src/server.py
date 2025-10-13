@@ -1,6 +1,7 @@
 """AgentKit Platform MCP Server - Implemented with FastMCP 2.0"""
 import os
 import json
+import argparse
 from typing import Optional
 from fastmcp import FastMCP
 from dotenv import load_dotenv
@@ -167,13 +168,13 @@ async def delete_runtime(runtime_id: str) -> str:
 async def get_runtime(runtime_id: str) -> str:
     """
     Get detailed information of a Runtime instance.
-    
-    Returns complete configuration including: status, version, endpoint, image, 
+
+    Returns complete configuration including: status, version, endpoint, image,
     environment variables, authentication config, and resource allocations.
-    
+
     Args:
         runtime_id: Runtime instance ID.
-        
+
     Returns:
         JSON string with complete Runtime details:
         - Basic info: name, description, status
@@ -444,9 +445,30 @@ async def list_runtime_versions(
 # Entry point for command line tool
 def main():
     """Main entry point for ap-mcp-server command"""
-    mcp.run(transport="streamable-http")
+    parser = argparse.ArgumentParser(
+        description="AgentKit Platform MCP Server",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run with stdio (default, for IDE integration)
+  ap-mcp-server
+  
+  # Run with HTTP server
+  ap-mcp-server -t streamable-http
+  ap-mcp-server --transport streamable-http
+        """
+    )
+    parser.add_argument(
+        "-t", "--transport",
+        choices=["stdio", "streamable-http"],
+        default="stdio",
+        help="Transport protocol (default: stdio)"
+    )
+    
+    args = parser.parse_args()
+    mcp.run(transport=args.transport)
 
 
-# Start HTTP/SSE server
+# Start server
 if __name__ == "__main__":
     main()
