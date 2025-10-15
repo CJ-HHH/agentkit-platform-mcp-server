@@ -1,6 +1,17 @@
 # AgentKit Platform MCP Server
 
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![FastMCP 2.0](https://img.shields.io/badge/FastMCP-2.0-green.svg)](https://github.com/jlowin/fastmcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Model Context Protocol (MCP) server for AgentKit Platform Runtime API, built with **FastMCP 2.0** and **uv**.
+
+**Features:**
+- 🚀 16 MCP Tools - Complete Runtime & Toolkit operations
+- 🔄 3 Workflows - Local, Cloud, Hybrid deployment support
+- ⚡ Official PyPI - Latest agentkit-sdk-python-inhouse-nightly
+- 📦 Zero Config - Auto field conversion & singleton pattern
+- 🎯 Production Ready - Comprehensive documentation & examples
 
 ## Quick Start
 
@@ -18,6 +29,9 @@ Environment variables can be set via IDE configuration or system env.
 ```bash
 # 1. Install dependencies
 uv sync
+
+# Note: agentkit-sdk-python-inhouse-nightly is installed from official PyPI
+# For latest version, use: pip install -U agentkit-sdk-python-inhouse-nightly -i https://pypi.org/simple
 
 # 2. Configure environment variables
 cp .env.example .env
@@ -52,7 +66,9 @@ ap-mcp-server -t streamable-http  # Run HTTP server
 
 ## Features
 
-Provides 8 AgentKit Platform Runtime API tools with comprehensive documentation:
+### Runtime Management Tools (8 tools)
+
+Provides AgentKit Platform Runtime API tools for managing containerized agent environments:
 
 - **create_runtime** - Create a new Runtime instance
 - **delete_runtime** - Delete a Runtime instance (with safety warnings)
@@ -62,6 +78,26 @@ Provides 8 AgentKit Platform Runtime API tools with comprehensive documentation:
 - **release_runtime** - Release/rollback Runtime versions
 - **get_runtime_version** - Get specific version details
 - **list_runtime_versions** - List all version history
+
+### Toolkit CLI Tools (8 tools)
+
+Provides AgentKit Toolkit CLI operations for complete agent development lifecycle:
+
+#### 📝 Project Setup
+- **toolkit_init_project** - Initialize a new agent project from template
+- **toolkit_edit_config** - Edit agentkit.yaml configuration (auto-creates if not exists)
+  - Supports: entry_point, workflow_type, project_name, image_name, runtime_name, role_name, entry_port, **envs**
+  - One-step configuration with environment variables support
+
+#### 🔨 Build & Deploy
+- **toolkit_build_image** - Build Docker image for the agent
+- **toolkit_deploy_agent** - Deploy agent to target environment
+- **toolkit_launch_agent** - Build and deploy in one command
+
+#### 🚀 Runtime Operations
+- **toolkit_invoke_agent** - Send test request to deployed agent
+- **toolkit_get_status** - Check agent runtime status
+- **toolkit_destroy_runtime** - Destroy running agent runtime
 
 ### Key Features
 
@@ -73,28 +109,33 @@ Provides 8 AgentKit Platform Runtime API tools with comprehensive documentation:
 
 ## Environment Variables
 
-Configure the following variables in `.env` file or IDE configuration:
+Configure the following variables in `.env` file or IDE configuration.
+
+**Unified VOLC_* Naming (Recommended):**
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
-| `AGENTKIT_REGION` | Volcengine region | No | `cn-beijing` |
-| `AGENTKIT_BASE_URL` | API endpoint (without https://) | Yes | - |
-| `AGENTKIT_ACCESS_KEY` | Volcengine Access Key | Yes | - |
-| `AGENTKIT_SECRET_KEY` | Volcengine Secret Key | Yes | - |
+| `VOLC_ACCESSKEY` | Volcengine Access Key | Yes | - |
+| `VOLC_SECRETKEY` | Volcengine Secret Key | Yes | - |
+| `VOLC_REGION` | Volcengine region | No | `cn-beijing` |
+| `VOLC_AGENTKIT_HOST` | API endpoint (without https://) | Yes | - |
 
 **Example `.env` file:**
 
 ```env
-AGENTKIT_REGION=cn-beijing
-AGENTKIT_BASE_URL=open.volcengineapi.com
-AGENTKIT_ACCESS_KEY=AKLT***************
-AGENTKIT_SECRET_KEY=****************************
+VOLC_ACCESSKEY=AKLT***************
+VOLC_SECRETKEY=****************************
+VOLC_REGION=cn-beijing
+VOLC_AGENTKIT_HOST=agentkit-stg.cn-beijing.volcengineapi.com
 ```
 
+**Backward Compatibility:**  
+Legacy `AGENTKIT_*` variable names are still supported for backward compatibility.
+
 **Configuration Priority:**
-1. IDE JSON config env (highest priority)
-2. System environment variables
-3. `.env` file (loaded by `load_dotenv()`, won't override existing vars)
+1. `.env` file (highest priority - overrides all others)
+2. IDE JSON config env variables
+3. System environment variables
 
 ## IDE Integration
 
@@ -113,10 +154,11 @@ Edit config file: `~/Library/Application Support/Claude/claude_desktop_config.js
         "ap-mcp-server"
       ],
       "env": {
-        "AGENTKIT_REGION": "cn-beijing",
-        "AGENTKIT_BASE_URL": "open.volcengineapi.com",
-        "AGENTKIT_ACCESS_KEY": "your_access_key",
-        "AGENTKIT_SECRET_KEY": "your_secret_key"
+        "VOLC_ACCESSKEY": "your_access_key",
+        "VOLC_SECRETKEY": "your_secret_key",
+        "VOLC_REGION": "cn-beijing",
+        "VOLC_SERVICE": "agentkit_stg",
+        "VOLC_AGENTKIT_HOST": "agentkit-stg.cn-beijing.volcengineapi.com"
       }
     }
   }
@@ -141,10 +183,11 @@ Add to IDE MCP configuration:
         "ap-mcp-server"
       ],
       "env": {
-        "AGENTKIT_REGION": "cn-beijing",
-        "AGENTKIT_BASE_URL": "open.volcengineapi.com",
-        "AGENTKIT_ACCESS_KEY": "AKLT***************",
-        "AGENTKIT_SECRET_KEY": "****************************"
+        "VOLC_ACCESSKEY": "AKLT***************",
+        "VOLC_SECRETKEY": "****************************",
+        "VOLC_REGION": "cn-beijing",
+        "VOLC_SERVICE": "agentkit_stg",
+        "VOLC_AGENTKIT_HOST": "agentkit-stg.cn-beijing.volcengineapi.com"
       }
     }
   }
@@ -153,9 +196,9 @@ Add to IDE MCP configuration:
 
 **Important Notes:**
 - Replace GitHub URL with your actual repository URL
-- Replace `AGENTKIT_ACCESS_KEY` and `AGENTKIT_SECRET_KEY` with your credentials
-- `AGENTKIT_BASE_URL` should be hostname only, **do not** include `https://` prefix
-- IDE JSON config env variables have highest priority (override `.env` file)
+- Replace `VOLC_ACCESSKEY` and `VOLC_SECRETKEY` with your credentials
+- `VOLC_AGENTKIT_HOST` should be hostname only, **do not** include `https://` prefix
+- `.env` file has highest priority and will override IDE JSON config
 - **No local installation needed** - `uvx` downloads and runs the package automatically
 - **Transport mode:** stdio is default, no need to specify `-t stdio` in args (IDEs use stdio automatically)
 
