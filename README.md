@@ -37,11 +37,32 @@ uv sync
 cp .env.example .env
 # Edit .env file with your credentials
 
-# 3. Run the server
+# 3. Run the server (stdio mode, for IDE integration)
 uv run ap-mcp-server
+
+# Or run with HTTP server
+uv run ap-mcp-server -t streamable-http
 ```
 
-Server URL: `http://127.0.0.1:8000/mcp`
+## Transport Modes
+
+### stdio (Default)
+- **Best for:** IDE integration (Windsurf, Claude Desktop, Cursor)
+- **Communication:** Through stdin/stdout
+- **Usage:** `ap-mcp-server` or `ap-mcp-server -t stdio`
+
+### streamable-http
+- **Best for:** Direct HTTP testing, web integrations
+- **Server URL:** `http://127.0.0.1:8000/mcp`
+- **Usage:** `ap-mcp-server -t streamable-http`
+
+**Command Options:**
+```bash
+ap-mcp-server -h              # Show help
+ap-mcp-server                 # Run with stdio (default)
+ap-mcp-server -t stdio        # Explicitly set stdio mode
+ap-mcp-server -t streamable-http  # Run HTTP server
+```
 
 ## Features
 
@@ -179,6 +200,7 @@ Add to IDE MCP configuration:
 - `VOLC_AGENTKIT_HOST` should be hostname only, **do not** include `https://` prefix
 - `.env` file has highest priority and will override IDE JSON config
 - **No local installation needed** - `uvx` downloads and runs the package automatically
+- **Transport mode:** stdio is default, no need to specify `-t stdio` in args (IDEs use stdio automatically)
 
 ## Tool Parameters
 
