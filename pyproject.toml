@@ -28,6 +28,7 @@ dependencies = [
     "pydantic>=2.0.0",
     "python-dotenv>=1.0.0",
     "volcengine-python-sdk @ git+https://code.byted.org/eps-platform/volcengine-python-sdk.git@agentkit_stg20251030-1760355508572",
+    "agentkit-sdk-python-inhouse-nightly",
 ]
 
 [project.scripts]
@@ -71,6 +72,12 @@ dev-dependencies = [
     "ruff>=0.1.0",
     "mypy>=1.0.0",
 ]
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+# Use official PyPI to get latest agentkit-sdk-python-inhouse-nightly releases
+# Third-party mirrors may have sync delays
 
 [tool.ruff]
 line-length = 100
