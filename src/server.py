@@ -4,7 +4,6 @@ from pathlib import Path
 from fastmcp import FastMCP
 from dotenv import load_dotenv
 
-from src.tools.runtime_tools import register_runtime_tools
 from src.tools.cli_tools import register_cli_tools
 from src.utils.tool_helpers import init_cloud_credentials
 
@@ -22,7 +21,6 @@ init_cloud_credentials()
 mcp = FastMCP("AgentKit Platform MCP Server")
 
 # Register all tools
-register_runtime_tools(mcp)
 register_cli_tools(mcp)
 
 
